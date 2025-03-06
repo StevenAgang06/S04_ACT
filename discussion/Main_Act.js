@@ -214,6 +214,8 @@ if (!isNaN(userPick)) {
     tried to store the chooseMoves result in a variable and it works. but somehow when i try it again rightnow it didnt work...
     
     im really sleepy i need to rest i will finish this tommorow...
+
+    testing connection
   */
   for (let iterator = 0; iterator === 1; ) {
     alert("User turn");
