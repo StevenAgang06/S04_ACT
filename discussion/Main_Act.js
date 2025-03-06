@@ -40,7 +40,7 @@ let pokemonObject = function () {
 };
 
 // Assign random damage every move
-let assignDmg = function (pokemonObject, index, advantages, player) {
+let assignDmg = function (pokemonObject, index, advantages) {
   for (let iterator = 0; iterator < 3; iterator++) {
     let percent = Math.random() * 1 - 0.1 + 0.1;
     pokemonObject.move[index][0].attackDmg[iterator] =
@@ -48,17 +48,9 @@ let assignDmg = function (pokemonObject, index, advantages, player) {
   }
   console.log("The one that got an advantage will got a 5% damage boost");
   if (advantages !== undefined) {
-    if (player === "realUser") {
-      if (advantages > 0) {
-        for (let iterator = 0; iterator < 3; iterator++) {
-          pokemonObject.move[index][0].attackDmg[iterator] *= 0.5;
-        }
-      }
-    } else {
-      if (advantages > 0) {
-        for (let iterator = 0; iterator < 3; iterator++) {
-          pokemonObject.move[index][0].attackDmg[iterator] *= 0.5;
-        }
+    if (advantages > 0) {
+      for (let iterator = 0; iterator < 3; iterator++) {
+        pokemonObject.move[index][0].attackDmg[iterator] *= 0.5;
       }
     }
   }
