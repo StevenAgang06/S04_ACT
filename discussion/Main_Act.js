@@ -39,18 +39,19 @@ let pokemonObject = function () {
   };
 };
 
-// Assign random damage every move
+// Assign random damage base on basic attack damage every move
 let assignDmg = function (pokemonObject, index, advantages) {
   for (let iterator = 0; iterator < 3; iterator++) {
-    let percent = Math.random() * 1 - 0.1 + 0.1;
+    let percent = Math.random() * 0.2 - 0.1 + 0.1;
     pokemonObject.move[index][0].attackDmg[iterator] =
       pokemonObject.attack[index] * percent;
   }
-  console.log("The one that got an advantage will got a 5% damage boost");
   if (advantages !== undefined) {
     if (advantages > 0) {
       for (let iterator = 0; iterator < 3; iterator++) {
-        pokemonObject.move[index][0].attackDmg[iterator] *= 0.5;
+        pokemonObject.move[index][0].attackDmg[iterator] =
+          pokemonObject.move[index][0].attackDmg[iterator] * 0.5 +
+          pokemonObject.move[index][0].attackDmg[iterator];
       }
     }
   }
@@ -68,28 +69,80 @@ let botEnemy = function (pokemon) {
   return choosed - 1;
 };
 
-let typeAdvantage = function (userPick, botPick) {
-  switch (userPick) {
+// check user/bot pokemon advantage
+let typeAdvantage = function (userPick, botPick, user) {
+  if (user === "user") {
+    switch (userPick) {
+      case "Fire":
+        if (botPick === "Grass") {
+          return 1;
+        } else {
+          return 0;
+        }
+      case "Water":
+        if (botPick === "Fire") {
+          return 1;
+        } else {
+          return 0;
+        }
+      case "Grass":
+        if (botPick === "Water") {
+          return 1;
+        } else {
+          return 0;
+        }
+      default:
+        return undefined;
+    }
+  } else {
+    switch (botPick) {
+      case "Fire":
+        if (userPick === "Grass") {
+          return 1;
+        } else {
+          return 0;
+        }
+      case "Water":
+        if (userPick === "Fire") {
+          return 1;
+        } else {
+          return 0;
+        }
+      case "Grass":
+        if (userPick === "Water") {
+          return 1;
+        } else {
+          return 0;
+        }
+      default:
+        return undefined;
+    }
+  }
+};
+
+let chooseMoves = function (pokemonMoves, type) {
+  console.log(pokemonMoves);
+  console.log(type);
+  switch (type) {
     case "Fire":
-      if (botPick === "Grass") {
-        return 1;
-      } else {
-        return 0;
-      }
+      return prompt(
+        `Choose Move \n 1: ${pokemonMoves.attackName[0]} \n 2: ${pokemonMoves.attackName[1]} \n 3: ${pokemonMoves.attackName[2]}`
+      );
     case "Water":
-      if (botPick === "Fire") {
-        return 1;
-      } else {
-        return 0;
-      }
+      return prompt(
+        `Choose Move \n 1: ${pokemonMoves.attackName[0]} \n 2: ${pokemonMoves.attackName[1]} \n 3: ${pokemonMoves.attackName[2]}`
+      );
     case "Grass":
-      if (botPick === "Water") {
-        return 1;
-      } else {
-        return 0;
-      }
-    default:
-      return undefined;
+      return prompt(
+        `Choose Move \n 1: ${pokemonMoves.attackName[0]} \n 2: ${pokemonMoves.attackName[1]} \n 3: ${pokemonMoves.attackName[2]}`
+      );
+  }
+};
+
+let pokemonBattle = function (user, moves) {
+  console.log(user);
+  if (user === "user") {
+  } else {
   }
 };
 
@@ -109,24 +162,29 @@ let userSelectPokemonType = function (pokemon) {
   );
   return choosed - 1;
 };
-
+alert(
+  "The one that got an advantage will got a 5% damage boost \n \n Fire > Grass \n Water > Fire \n Grass > Water \n  \nif both of you pick the same type no one will get the advantage"
+);
 let userPick = userSelectPokemonType(pokemonObject());
 let botPick;
 
 if (!isNaN(userPick)) {
   botPick = botEnemy(pokemonObject());
-  userAdvantage = typeAdvantage(
-    pokemonObject().type[userPick],
-    pokemonObject().type[botPick]
-  );
-
   let userPokemon = new Pokemon(
     pokemonObject().name[userPick],
     pokemonObject().type[userPick],
     pokemonObject().hp[userPick],
     pokemonObject().attack[userPick],
     pokemonObject().defense[userPick],
-    assignDmg(pokemonObject(), userPick, userAdvantage, "realUser")
+    assignDmg(
+      pokemonObject(),
+      userPick,
+      typeAdvantage(
+        pokemonObject().type[userPick],
+        pokemonObject().type[botPick],
+        "user"
+      )
+    )
   );
   let botPokemon = new Pokemon(
     pokemonObject().name[botPick],
@@ -134,18 +192,35 @@ if (!isNaN(userPick)) {
     pokemonObject().hp[botPick],
     pokemonObject().attack[botPick],
     pokemonObject().defense[botPick],
-    assignDmg(pokemonObject(), botPick, userAdvantage, "bot")
+    assignDmg(
+      pokemonObject(),
+      botPick,
+      typeAdvantage(
+        pokemonObject().type[userPick],
+        pokemonObject().type[botPick],
+        "user"
+      )
+    )
   );
 
-  console.log(userPokemon);
-  console.log(botPokemon);
+  alert("Every pokemon moves has a random damage. Choose wisely and goodluck");
+  // console.log(userPokemon);
+  // console.log(botPokemon);
+
+  // Continue tommorow
+  /* 
+
+    Problem is i can't call/enter the pokemonBattle function if i pass the chooseMoves as an argument
+    tried to store the chooseMoves result in a variable and it works. but somehow when i try it again rightnow it didnt work...
+    
+    im really sleepy i need to rest i will finish this tommorow...
+  */
+  for (let iterator = 0; iterator === 1; ) {
+    alert("User turn");
+    pokemonBattle("user", "yes", botPokemon);
+    alert(`Enemy Pokemon has ${botPokemon.hp > 0 ? "Survived" : "Fainted"}`);
+    botPokemon.hp <= 0 ? (iterator = 1) : undefined;
+    alert("Enemy turn");
+    pokemonBattle("bot", chooseMoves(botPokemon.move, botPokemon.type));
+  }
 }
-
-// let pokemon1 = new Pokemon("Flareon", "fire", 1000);
-// let typeAdvantage = function (attackerType, defenderType) {
-//   switch (attackerType) {
-//     case "fire" || "Fire":
-//   }
-// };
-
-// let battle = function (pokemon1, pokemon2) {};
