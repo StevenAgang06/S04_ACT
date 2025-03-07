@@ -120,29 +120,48 @@ let typeAdvantage = function (userPick, botPick, user) {
   }
 };
 
-let chooseMoves = function (pokemonMoves, type) {
-  console.log(pokemonMoves);
-  console.log(type);
+let chooseMoves = function (pokemonMoves, type, user = null) {
+  if (user === "bot") {
+    return Math.floor(Math.random() * (3 - 0));
+  }
+  let chooseMove = undefined;
   switch (type) {
     case "Fire":
-      return prompt(
+      chooseMove = prompt(
         `Choose Move \n 1: ${pokemonMoves.attackName[0]} \n 2: ${pokemonMoves.attackName[1]} \n 3: ${pokemonMoves.attackName[2]}`
       );
+      if (isNaN(chooseMove) || chooseMove < 1 || chooseMove > 3) {
+        return alert("Invalid moves");
+      }
+      return chooseMove - 1;
     case "Water":
-      return prompt(
+      chooseMove = prompt(
         `Choose Move \n 1: ${pokemonMoves.attackName[0]} \n 2: ${pokemonMoves.attackName[1]} \n 3: ${pokemonMoves.attackName[2]}`
       );
+      if (isNaN(chooseMove) || chooseMove < 1 || chooseMove > 3) {
+        return alert("Invalid moves");
+      }
+      return chooseMove - 1;
     case "Grass":
-      return prompt(
+      chooseMove = prompt(
         `Choose Move \n 1: ${pokemonMoves.attackName[0]} \n 2: ${pokemonMoves.attackName[1]} \n 3: ${pokemonMoves.attackName[2]}`
       );
+      if (isNaN(chooseMove) || chooseMove < 1 || chooseMove > 3) {
+        return alert("Invalid moves");
+      }
+      return chooseMove - 1;
   }
 };
 
-let pokemonBattle = function (user, moves) {
-  console.log(user);
-  if (user === "user") {
+let pokemonBattle = function (moves, pokemon) {
+  if (isNaN(moves)) return;
+  if (pokemon.defense != 0) {
+    defHit = pokemon.move.attackDmg[moves] * 0.4;
+    hpHit = pokemon.move.attackDmg[moves] * 0.6;
+    pokemon.hp -= hpHit;
+    pokemon.defense -= defHit;
   } else {
+    pokemon.hp -= pokemon.move.attackDmg[moves];
   }
 };
 
@@ -204,25 +223,32 @@ if (!isNaN(userPick)) {
   );
 
   alert("Every pokemon moves has a random damage. Choose wisely and goodluck");
-  // console.log(userPokemon);
-  // console.log(botPokemon);
-
-  // Continue tommorow
-  /* 
-
-    Problem is i can't call/enter the pokemonBattle function if i pass the chooseMoves as an argument
-    tried to store the chooseMoves result in a variable and it works. but somehow when i try it again rightnow it didnt work...
-    
-    im really sleepy i need to rest i will finish this tommorow...
-
-    testing connection
-  */
-  for (let iterator = 0; iterator === 1; ) {
+  for (let iterator = 0; iterator != 1; ) {
     alert("User turn");
-    pokemonBattle("user", "yes", botPokemon);
-    alert(`Enemy Pokemon has ${botPokemon.hp > 0 ? "Survived" : "Fainted"}`);
+    let userMoves = chooseMoves(userPokemon.move, userPokemon.type);
+    pokemonBattle(userMoves, botPokemon);
+    alert(
+      `Enemy Pokemon has ${
+        botPokemon.hp > 0
+          ? `Survived, Enemy HP is: ${Math.floor(
+              botPokemon.hp
+            )} \n Enemy Defense is: ${Math.floor(botPokemon.defense)} `
+          : `Fainted, Enemy HP is: 0 \n Enemy Defense is: 0`
+      }`
+    );
     botPokemon.hp <= 0 ? (iterator = 1) : undefined;
     alert("Enemy turn");
-    pokemonBattle("bot", chooseMoves(botPokemon.move, botPokemon.type));
+    let botMoves = chooseMoves(botPokemon.move, botPokemon.type, "bot");
+    pokemonBattle(botMoves, userPokemon);
+    alert(
+      `User Pokemon has ${
+        botPokemon.hp > 0
+          ? `Survived, User HP is: ${Math.floor(
+              userPokemon.hp
+            )} \n User Defense is: ${Math.floor(userPokemon.defense)}`
+          : `Fainted, User HP is\ 0 \n User Defense is: 0`
+      }`
+    );
+    userPokemon.hp <= 0 ? (iterator = 1) : undefined;
   }
 }
