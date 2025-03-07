@@ -181,6 +181,7 @@ let userSelectPokemonType = function (pokemon) {
   );
   return choosed - 1;
 };
+
 alert(
   "The one that got an advantage will got a 5% damage boost \n \n Fire > Grass \n Water > Fire \n Grass > Water \n  \nif both of you pick the same type no one will get the advantage"
 );
